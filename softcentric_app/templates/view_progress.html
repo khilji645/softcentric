@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Project-wise Progress Updates</h3>
+
+<!-- Filter Form -->
+<form method="get" class="row mb-3 g-2">
+  <div class="col-md-3">
+    <select name="project" class="form-select">
+      <option value="">-- Filter by Project --</option>
+      {% for proj in project_options %}
+        <option value="{{ proj.id }}" {% if project_filter == proj.id|string %}selected{% endif %}>{{ proj.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="user" class="form-select">
+      <option value="">-- Filter by User --</option>
+      {% for u in user_options %}
+        <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{{ url_for('view_progress') }}" class="btn btn-secondary">Reset</a>
+  </div>
+</form>
+
+<!-- Toggle Completed Projects -->
+<div class="mb-3">
+  {% if not show_completed %}
+    <a href="{{ url_for('view_progress', completed='true', project=project_filter, user=user_filter) }}" class="btn btn-secondary">Show Completed Projects</a>
+  {% else %}
+    <a href="{{ url_for('view_progress', project=project_filter, user=user_filter) }}" class="btn btn-secondary">Hide Completed Projects</a>
+  {% endif %}
+</div>
+
+<!-- In-Progress Projects -->
+
+{% set in_progress_exist = false %}
+{% for project_id, project in projects.items() %}
+  {% if project.get("status") != "completed" %}
+    {% set project_progress = progress | selectattr("project_id", "equalto", project_id) | list %}
+    {% if project_progress %}
+      {% set in_progress_exist = true %}
+      <h5 class="mt-3">{{ project.get("name", "Unnamed Project") }}</h5>
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Update</th>
+            <th>Date</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in project_progress %}
+          <tr>
+            <td>{{ p.get("id", "-") }}</td>
+            <td>{{ p.get("user", "Unknown") }}</td>
+            <td>{{ p.get("update", "-") }}</td>
+            <td>{{ p.get("date", "-") }}</td>
+            <td>
+              {% if p.get("instructions") %}
+                {{ p.get("instructions") }}
+              {% elif role == 'admin' %}
+                <button class="btn btn-sm btn-primary" onclick="document.getElementById('form-{{ p.get('id') }}').style.display='block'; this.style.display='none';">
+                  Add Instruction
+                </button>
+                <form method="POST" action="{{ url_for('add_instruction', progress_id=p.get('id')) }}" id="form-{{ p.get('id') }}" style="display:none;">
+                  <textarea name="instruction" class="form-control form-control-sm mt-1" placeholder="Enter instruction" required></textarea>
+                  <button class="btn btn-sm btn-success mt-1">Send</button>
+                </form>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% if not in_progress_exist %}
+
+{% endif %}
+
+<!-- Completed Projects (Visible only when button pressed) -->
+{% if show_completed %}
+<h4 class="mt-4">Completed Projects</h4>
+{% set completed_exist = false %}
+{% for project_id, project in projects.items() %}
+  {% if project.get("status") == "completed" %}
+    {% set project_progress = progress | selectattr("project_id", "equalto", project_id) | list %}
+    {% if project_progress %}
+      {% set completed_exist = true %}
+      <h5 class="mt-3">{{ project.get("name", "Unnamed Project") }}</h5>
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Update</th>
+            <th>Date</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in project_progress %}
+          <tr>
+            <td>{{ p.get("id", "-") }}</td>
+            <td>{{ p.get("user", "Unknown") }}</td>
+            <td>{{ p.get("update", "-") }}</td>
+            <td>{{ p.get("date", "-") }}</td>
+            <td>{{ p.get("instructions", "-") }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% if not completed_exist %}
+
+{% endif %}
+{% endif %}
+
+{% endblock %}

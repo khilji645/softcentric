@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name": "Al-Fateh Social Media management",
+        "description": "social media management",
+        "users": [
+            "Rehman"
+        ],
+        "status": "completed"
+    },
+    {
+        "id": 2,
+        "name": "Jamat E isalmi social media",
+        "description": "maintain social media of jamat e islami",
+        "users": [
+            "Rehman",
+            "Fahad"
+        ],
+        "status": "in-progress"
+    },
+    {
+        "id": 3,
+        "name": "vvvvvv",
+        "description": "egwerf",
+        "users": [
+            "Fahad"
+        ],
+        "status": "in-progress"
+    }
+]

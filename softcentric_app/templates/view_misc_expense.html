@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Miscellaneous Expenses</h3>
+
+<!-- Toggle Previous Months Button -->
+<div class="mb-3">
+  {% if not show_previous %}
+    <a href="{{ url_for('view_misc_expense', previous='true', user=user_filter, description=desc_filter, paid_by=paid_by_filter, month=month_filter) }}" class="btn btn-secondary">
+      Show Previous Months
+    </a>
+  {% else %}
+    <a href="{{ url_for('view_misc_expense', user=user_filter, description=desc_filter, paid_by=paid_by_filter, month=month_filter) }}" class="btn btn-secondary">
+      Hide Previous Months
+    </a>
+  {% endif %}
+</div>
+
+<!-- Filter Form -->
+<form method="get" class="row mb-3 g-2">
+  {% if role == 'admin' %}
+  <div class="col-md-3">
+    <select name="user" class="form-select">
+      <option value="">-- Filter by User --</option>
+      {% for u in users %}
+        <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+
+  <div class="col-md-3">
+    <select name="description" class="form-select">
+      <option value="">-- Filter by Description --</option>
+      {% for d in descriptions %}
+        <option value="{{ d }}" {% if desc_filter == d %}selected{% endif %}>{{ d }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="paid_by" class="form-select">
+      <option value="">-- Filter by Paid By --</option>
+      {% for p in paid_by_list %}
+        <option value="{{ p }}" {% if paid_by_filter == p %}selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="month" class="form-select">
+      <option value="">-- Filter by Month --</option>
+      {% for m in months %}
+        <option value="{{ m }}" {% if month_filter == m %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-12 d-flex mt-2">
+    <button type="submit" class="btn btn-primary me-2">Filter</button>
+    <a href="{{ url_for('view_misc_expense') }}" class="btn btn-secondary">Reset</a>
+  </div>
+</form>
+
+<!-- Expense Table -->
+{% if misc_expenses %}
+  <h5 class="mb-2">{{ "Current Month" if not show_previous else "Previous Months" }} Expenses</h5>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>User</th>
+        <th>Description</th>
+        <th>Amount (PKR)</th>
+        <th>Paid By</th>
+        <th>Remarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for exp in misc_expenses %}
+      <tr>
+        <td>{{ exp["id"] }}</td>
+        <td>{{ exp["date"] }}</td>
+        <td>{{ exp["user"] }}</td>
+        <td>{{ exp["description"] }}</td>
+        <td>{{ exp["amount"] }}</td>
+        <td>{{ exp["paid_by"] }}</td>
+        <td>{{ exp.get("remarks", "-") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h5 class="text-end text-success">
+    Total: <strong>PKR {{ '%.2f'|format(total_amount) }}</strong>
+  </h5>
+{% else %}
+  <p>No records found for this filter.</p>
+{% endif %}
+{% endblock %}

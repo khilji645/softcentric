@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "sender": "admin",
+        "receiver": "Rehman",
+        "message": "hello",
+        "date": "2025-11-12 13:27",
+        "read": true,
+        "timestamp": "1970-01-01T00:00:00"
+    },
+    {
+        "id": 2,
+        "sender": "admin",
+        "receiver": "Rehman",
+        "message": "hy",
+        "date": "2025-11-12 13:27",
+        "read": true,
+        "timestamp": "1970-01-01T00:00:00"
+    },
+    {
+        "sender": "admin",
+        "receiver": "Rehman",
+        "message": "yes",
+        "timestamp": "2025-11-12T13:52:32.465954",
+        "read": true
+    },
+    {
+        "sender": "admin",
+        "receiver": "Rehman",
+        "message": "how are you doing",
+        "timestamp": "2025-11-12T13:52:44.513226",
+        "read": true
+    },
+    {
+        "sender": "Rehman",
+        "receiver": "admin",
+        "message": "yes please",
+        "timestamp": "2025-11-12T13:53:30.273369",
+        "read": true
+    },
+    {
+        "id": 6,
+        "sender": "admin",
+        "receiver": "Rehman",
+        "message": "fbfdvd",
+        "timestamp": "2025-11-13 08:28:41",
+        "read": true
+    },
+    {
+        "id": 7,
+        "sender": "Rehman",
+        "receiver": "Mehmood",
+        "message": "how are you doing",
+        "timestamp": "2025-11-13 12:57:33",
+        "read": true
+    },
+    {
+        "id": 8,
+        "sender": "Rehman",
+        "receiver": "Mehmood",
+        "message": "hey",
+        "timestamp": "2025-11-13 13:47:08",
+        "read": true
+    }
+]

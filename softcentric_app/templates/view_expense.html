@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>All Expenses</h3>
+
+<!-- Filter Form -->
+<form method="get" class="row mb-3 g-2">
+  <div class="col-md-4">
+    <select name="project" class="form-select">
+      <option value="">-- Filter by Project --</option>
+      {% for proj in project_options %}
+        <option value="{{ proj.id }}" {% if project_filter == proj.id|string %}selected{% endif %}>{{ proj.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select name="description" class="form-select">
+      <option value="">-- Filter by Description --</option>
+      {% for d in description_options %}
+        <option value="{{ d }}" {% if desc_filter == d %}selected{% endif %}>{{ d }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4 d-flex">
+    <button type="submit" class="btn btn-primary me-2">Filter</button>
+    <a href="{{ url_for('view_expense') }}" class="btn btn-secondary">Reset</a>
+  </div>
+</form>
+
+<!-- Expenses Table -->
+<table class="table table-bordered table-striped mt-3">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Project</th>
+      <th>Amount (PKR)</th>
+      <th>Description</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for exp in expenses %}
+      {% if session.get('role') == 'admin' or session.get('username') in projects[exp["project_id"]]["users"] %}
+      <tr>
+        <td>{{ exp["id"] }}</td>
+        <td>{{ projects[exp["project_id"]] }}</td>
+        <td>{{ exp["amount"] }}</td>
+        <td>{{ exp["description"] }}</td>
+        <td>{{ exp["date"] }}</td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if not expenses %}
+  <p>No expenses found for this filter.</p>
+{% endif %}
+{% endblock %}

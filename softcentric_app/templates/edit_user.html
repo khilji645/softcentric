@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Edit User: {{ user.username }}</h3>
+
+<form method="POST">
+    <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Role</label>
+        <select name="role" class="form-select" required>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+            <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update User</button>
+    <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

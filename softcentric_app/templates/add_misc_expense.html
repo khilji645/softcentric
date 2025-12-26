@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Add Miscellaneous Expense</h3>
+
+<form method="POST">
+  <div class="mb-2">
+    <label>Date:</label>
+    <input type="date" name="date" class="form-control" required>
+  </div>
+
+  {% if role == 'admin' %}
+  <div class="mb-2">
+    <label>User:</label>
+    <select name="user" class="form-select" required>
+      {% for u in users %}
+        <option value="{{ u.username }}">{{ u.username }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% else %}
+    <input type="hidden" name="user" value="{{ session.get('username') }}">
+  {% endif %}
+
+  <div class="mb-2">
+    <label>Description:</label>
+    <input type="text" name="description" class="form-control" required>
+  </div>
+
+  <div class="mb-2">
+    <label>Amount (PKR):</label>
+    <input type="number" name="amount" step="0.01" class="form-control" required>
+  </div>
+
+  <div class="mb-2">
+    <label>Paid By:</label>
+    <select name="paid_by" class="form-select" required>
+      {% for u in users %}
+        <option value="{{ u.username }}">{{ u.username }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-2">
+    <label>Remarks:</label>
+    <input type="text" name="remarks" class="form-control">
+  </div>
+
+  <button type="submit" class="btn btn-success">Add Expense</button>
+</form>
+{% endblock %}

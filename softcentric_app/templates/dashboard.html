@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Welcome, {{ session.get('username') }}!</h2>
+
+<!-- Toggle Completed Projects -->
+<div class="mb-3">
+  {% if not show_completed %}
+    <a href="{{ url_for('dashboard', completed='true') }}" class="btn btn-secondary">Show Completed Projects</a>
+  {% else %}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Hide Completed Projects</a>
+  {% endif %}
+</div>
+
+<!-- In-Progress Projects -->
+
+{% if projects %}
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Users</th>
+      {% if role=='admin' %}<th>Actions</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in projects %}
+      {% if project.get("status") != "completed" %}
+        {% if role=='admin' or session.get('username') in project["users"] %}
+        <tr>
+          <td>{{ project["id"] }}</td>
+          <td>{{ project["name"] }}</td>
+          <td>{{ project["description"] }}</td>
+          <td>{{ project["users"]|join(', ') }}</td>
+          {% if role=='admin' %}
+          <td>
+            <a href="{{ url_for('project_edit', project_id=project['id']) }}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{{ url_for('project_delete', project_id=project['id']) }}" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{{ url_for('project_detail', project_id=project['id']) }}" class="btn btn-sm btn-info">Details</a>
+            <a href="{{ url_for('project_complete', project_id=project['id']) }}" class="btn btn-sm btn-success">Mark Completed</a>
+            <a href="{{ url_for('send_message') }}" class="btn btn-sm btn-primary">Send Message</a>
+            <a href="{{ url_for('messages') }}" class="btn btn-sm btn-secondary">Messages</a>
+      
+          </td>
+          {% endif %}
+        </tr>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No in-progress projects available.</p>
+{% endif %}
+
+<!-- Completed Projects (Collapsible Section) -->
+{% if show_completed %}
+<h4 class="mt-4">Completed Projects:</h4>
+{% if projects %}
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Users</th>
+      {% if role=='admin' %}<th>Actions</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in projects %}
+      {% if project.get("status") == "completed" %}
+        {% if role=='admin' or session.get('username') in project["users"] %}
+        <tr>
+          <td>{{ project["id"] }}</td>
+          <td>{{ project["name"] }}</td>
+          <td>{{ project["description"] }}</td>
+          <td>{{ project["users"]|join(', ') }}</td>
+          {% if role=='admin' %}
+          <td>
+            <a href="{{ url_for('project_detail', project_id=project['id']) }}" class="btn btn-sm btn-info">Details</a>
+          </td>
+          {% endif %}
+        </tr>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No completed projects to display.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

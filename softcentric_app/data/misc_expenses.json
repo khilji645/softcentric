@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "user": "admin",
+        "description": "roti",
+        "amount": 500.0,
+        "date": "2025-11-12"
+    },
+    {
+        "id": 2,
+        "user": "Rehman",
+        "description": "khana",
+        "amount": 100.0,
+        "date": "2025-11-11"
+    },
+    {
+        "id": 3,
+        "user": "admin",
+        "description": "PC",
+        "amount": 5700.0,
+        "date": "2025-10-15"
+    },
+    {
+        "id": 4,
+        "user": "admin",
+        "description": "khana",
+        "amount": 300.0,
+        "date": "2025-11-12",
+        "paid_by": "Mehmood",
+        "remarks": "lunch(umair,mehmood,fahad,rehman)"
+    }
+]

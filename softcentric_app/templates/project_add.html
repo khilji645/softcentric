@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>{% if project %}Edit Project{% else %}Add Project{% endif %}</h3>
+<form method="POST">
+  <label>Project Name:</label>
+  <input type="text" name="name" class="form-control mb-2" placeholder="Project Name" 
+         value="{{ project['name'] if project else '' }}" required>
+
+  <label>Description:</label>
+  <textarea name="description" class="form-control mb-2" placeholder="Description" required>{{ project['description'] if project else '' }}</textarea>
+
+  <label>Assign Users:</label>
+  <select name="users" class="form-select mb-2" multiple required>
+    {% for user in users %}
+      {% set selected = project and (user['username'] in project['users']) %}
+      <option value="{{ user['username'] }}" {% if selected %}selected{% endif %}>{{ user['username'] }} ({{ user['role'] }})</option>
+    {% endfor %}
+  </select>
+  <small class="text-muted">Hold Ctrl (Cmd on Mac) to select multiple users.</small>
+
+  <button class="btn btn-success mt-2">{% if project %}Update Project{% else %}Add Project{% endif %}</button>
+</form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Add Progress Update</h3>
+<form method="POST">
+  <label>Project:</label>
+  <select name="project_id" class="form-select mb-2">
+    {% for project in projects %}
+      {% if session.get('role') == 'admin' or session.get('username') in project["users"] %}
+        <option value="{{ project["id"] }}">{{ project["name"] }}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+
+  <label>Progress Update:</label>
+  <textarea name="update" class="form-control mb-2" placeholder="Progress Update" required></textarea>
+
+  <label>Date:</label>
+  <input type="date" name="date" class="form-control mb-2" required>
+
+  {% if session.get('role') == 'admin' %}
+  <label>Instruction (optional for users):</label>
+  <textarea name="instruction" class="form-control mb-2" placeholder="Add instruction for users"></textarea>
+  {% endif %}
+
+  <button class="btn btn-success">Add Progress</button>
+</form>
+{% endblock %}

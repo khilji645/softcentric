@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Project: {{ project["name"] }}</h2>
+<p>{{ project["description"] }}</p>
+
+<h4>Expenses:</h4>
+<table class="table table-bordered">
+<tr>
+  <th>ID</th>
+  <th>Amount</th>
+  <th>Description</th>
+  <th>Date</th>
+</tr>
+{% for exp in expenses %}
+<tr>
+  <td>{{ exp["id"] }}</td>
+  <td>{{ exp["amount"] }}</td>
+  <td>{{ exp["description"] }}</td>
+  <td>{{ exp["date"] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h4>Progress Updates:</h4>
+<table class="table table-bordered">
+<tr>
+  <th>ID</th>
+  <th>User</th>
+  <th>Update</th>
+  <th>Date</th>
+  <th>Instructions</th>
+</tr>
+{% for p in progress %}
+<tr>
+  <td>{{ p["id"] }}</td>
+  <td>{{ p.get("user", "Unknown") }}</td>
+  <td>{{ p["update"] }}</td>
+  <td>{{ p["date"] }}</td>
+  <td>
+    {% if role == 'admin' %}
+      {% if p.get("instructions") %}
+        {{ p["instructions"] }}
+      {% else %}
+        <form method="POST" action="{{ url_for('add_instruction', progress_id=p['id']) }}">
+          <input type="text" name="instruction" class="form-control form-control-sm" placeholder="Add instruction" required>
+          <button class="btn btn-sm btn-primary mt-1">Send</button>
+        </form>
+      {% endif %}
+    {% else %}
+      {{ p.get("instructions", "") }}
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

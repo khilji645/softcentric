@@ -1,0 +1,169 @@
+/* ------------------ General Body ------------------ */
+body {
+    background: linear-gradient(120deg, #f0f8ff, #e6f7ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #343a40;
+    transition: all 0.3s;
+}
+
+/* ------------------ Navbar Brand ------------------ */
+.navbar-brand {
+    font-size: 2rem; /* Larger brand */
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff !important;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* ------------------ Sidebar ------------------ */
+.nav-link {
+    margin-bottom: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    transition: all 0.3s;
+    color: #495057 !important;
+    font-weight: 500;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.nav-link:hover {
+    background: linear-gradient(90deg, #0d6efd, #6610f2);
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transform: translateX(3px);
+}
+
+/* ------------------ Cards & Forms ------------------ */
+form, .card {
+    background: linear-gradient(145deg, #ffffff, #f0f8ff);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+    transition: all 0.3s;
+}
+
+form:hover, .card:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+}
+
+/* ------------------ Tables ------------------ */
+table {
+    background-color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+}
+
+table th, table td {
+    vertical-align: middle !important;
+    padding: 14px;
+}
+
+table th {
+    background: linear-gradient(90deg, #0d6efd, #6610f2);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+table tbody tr:hover {
+    background: #d0e7ff;
+    transform: scale(1.02);
+}
+
+/* ------------------ Buttons ------------------ */
+.btn {
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+    transition: all 0.3s;
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    color: #fff;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* Primary, Success, Danger Variants */
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b);
+}
+
+/* ------------------ Floating Message Button ------------------ */
+.floating-msg-btn {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    color: #ffffff;
+    font-size: 1.8rem;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.floating-msg-btn:hover {
+    transform: scale(1.2) rotate(5deg);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+/* ------------------ Messaging Panel ------------------ */
+#chat-box {
+    background: linear-gradient(145deg, #f8f9fa, #e6f7ff);
+    border-radius: 15px;
+    padding: 15px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+#chat-box .bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #6610f2) !important;
+}
+
+#chat-box .bg-light {
+    background: linear-gradient(135deg, #ffffff, #d0e7ff) !important;
+}
+
+#chat-box .rounded {
+    border-radius: 15px;
+}
+
+/* ------------------ Responsive Adjustments ------------------ */
+@media (max-width: 992px) {
+    .col-md-2, .col-md-4, .col-md-8 {
+        min-height: auto;
+    }
+    .navbar-brand {
+        font-size: 1.6rem;
+    }
+    .floating-msg-btn {
+        width: 65px;
+        height: 65px;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .navbar-brand {
+        font-size: 1.4rem;
+    }
+}
