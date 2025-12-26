@@ -7,9 +7,9 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# ================= PATH FIX =================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
+# ================= PATH FIX FOR VERCEL =================
+# Vercel filesystem is mostly read-only, use /tmp for writable storage
+DATA_DIR = os.path.join("/tmp", "data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
 USERS_FILE = os.path.join(DATA_DIR, "users.json")
@@ -24,6 +24,8 @@ for file in [USERS_FILE, PROJECTS_FILE, EXPENSES_FILE, PROGRESS_FILE, MESSAGES_F
     if not os.path.exists(file):
         with open(file, "w") as f:
             json.dump([], f)
+# ==========================================================
+
 # ==========================================================
 
 # -------------------- Decorators --------------------
