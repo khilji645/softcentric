@@ -555,4 +555,11 @@ def view_misc_expense():
 
 # -------------------- Run App --------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    import logging
+    import sys
+
+    # Log Flask errors to stdout (Vercel captures stdout/stderr)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    
+    app.run(debug=True)  # keep debug=True temporarily to see errors in logs
+
