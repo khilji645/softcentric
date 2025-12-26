@@ -7,9 +7,9 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# ================= PATH FIX FOR VERCEL =================
-# Vercel filesystem is mostly read-only, use /tmp for writable storage
-DATA_DIR = os.path.join("/tmp", "data")
+# ================= PATH FIX =================
+# Use /tmp for writable storage on Vercel
+DATA_DIR = "/tmp/data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 USERS_FILE = os.path.join(DATA_DIR, "users.json")
@@ -24,9 +24,6 @@ for file in [USERS_FILE, PROJECTS_FILE, EXPENSES_FILE, PROGRESS_FILE, MESSAGES_F
     if not os.path.exists(file):
         with open(file, "w") as f:
             json.dump([], f)
-# ==========================================================
-
-# ==========================================================
 
 # -------------------- Decorators --------------------
 def login_required(f):
@@ -48,6 +45,8 @@ def admin_required(f):
 
 # -------------------- JSON Helpers --------------------
 def read_json(file):
+    if not os.path.exists(file):
+        return []
     with open(file, "r") as f:
         return json.load(f)
 
@@ -96,7 +95,6 @@ def dashboard():
     all_projects = read_json(PROJECTS_FILE)
     expenses = read_json(EXPENSES_FILE)
     progress = read_json(PROGRESS_FILE)
-    messages = read_json(MESSAGES_FILE)
 
     show_completed = request.args.get("completed", "").lower() == "true"
 
@@ -553,13 +551,5 @@ def view_misc_expense():
         show_previous=show_previous
     )
 
-# -------------------- Run App --------------------
-if __name__ == "__main__":
-    import logging
-    import sys
-
-    # Log Flask errors to stdout (Vercel captures stdout/stderr)
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    
-    app.run(debug=True)  # keep debug=True temporarily to see errors in logs
-
+# ================= Export app =================
+# Vercel will use this `app` object automatically
