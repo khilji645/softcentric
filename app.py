@@ -4,12 +4,13 @@ import os
 from functools import wraps
 from datetime import datetime
 
+# ================= Flask App =================
 app = Flask(__name__)
-app.secret_key = "supersecretkey"
+app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
 
 # ================= PATH FIX =================
-# Use /tmp for writable storage on Vercel
-DATA_DIR = "/tmp/data"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
 USERS_FILE = os.path.join(DATA_DIR, "users.json")
@@ -20,7 +21,14 @@ MESSAGES_FILE = os.path.join(DATA_DIR, "messages.json")
 MISC_FILE = os.path.join(DATA_DIR, "misc_expenses.json")
 
 # Ensure JSON files exist
-for file in [USERS_FILE, PROJECTS_FILE, EXPENSES_FILE, PROGRESS_FILE, MESSAGES_FILE, MISC_FILE]:
+for file in [
+    USERS_FILE,
+    PROJECTS_FILE,
+    EXPENSES_FILE,
+    PROGRESS_FILE,
+    MESSAGES_FILE,
+    MISC_FILE,
+]:
     if not os.path.exists(file):
         with open(file, "w") as f:
             json.dump([], f)
@@ -34,6 +42,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -45,18 +54,21 @@ def admin_required(f):
 
 # -------------------- JSON Helpers --------------------
 def read_json(file):
-    if not os.path.exists(file):
-        return []
     with open(file, "r") as f:
         return json.load(f)
+
 
 def write_json(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
+
 def get_unread_count(username):
     messages = read_json(MESSAGES_FILE)
-    return sum(1 for m in messages if m["receiver"] == username and not m.get("read", False))
+    return sum(
+        1 for m in messages
+        if m["receiver"] == username and not m.get("read", False)
+    )
 
 # -------------------- Context Processor --------------------
 @app.context_processor
@@ -79,6 +91,7 @@ def login():
                 return redirect(url_for("dashboard"))
         flash("Invalid username or password")
     return render_template("login.html")
+
 
 @app.route("/logout")
 def logout():
@@ -106,8 +119,10 @@ def dashboard():
     else:
         projects = all_projects
 
-    filtered_projects = [p for p in projects if (p.get("status", "").lower() == "completed") == show_completed]
-    unread_count = get_unread_count(username)
+    filtered_projects = [
+        p for p in projects
+        if (p.get("status", "").lower() == "completed") == show_completed
+    ]
 
     return render_template(
         "dashboard.html",
@@ -115,8 +130,52 @@ def dashboard():
         projects=filtered_projects,
         expenses=expenses,
         progress=progress,
-        unread_count=unread_count,
-        show_completed=show_completed
+        unread_count=get_unread_count(username),
+        show_completed=show_completed,
+    )
+
+# -------------------- Project Routes --------------------
+@app.route("/project/add", methods=["GET", "POST"])
+@login_required
+@admin_required
+def project_add():
+    users = read_json(USERS_FILE)
+    if request.method == "POST":
+        projects = read_json(PROJECTS_FILE)
+        projects.append({
+            "id": len(projects) + 1,
+            "name": request.form["name"],
+            "description": request.form["description"],
+            "users": request.form.getlist("users"),
+            "status": "in-progress",
+        })
+        write_json(PROJECTS_FILE, projects)
+        return redirect(url_for("dashboard"))
+    return render_template("project_add.html", users=users)
+
+@app.route("/project/<int:project_id>")
+@login_required
+def project_detail(project_id):
+    projects = read_json(PROJECTS_FILE)
+    project = next((p for p in projects if p["id"] == project_id), None)
+    if not project:
+        flash("Project not found")
+        return redirect(url_for("dashboard"))
+    if session.get("role") != "admin" and session["username"] not in project["users"]:
+        flash("Access denied")
+        return redirect(url_for("dashboard"))
+
+    expenses = [e for e in read_json(EXPENSES_FILE) if e["project_id"] == project_id]
+    progress = [p for p in read_json(PROGRESS_FILE) if p["project_id"] == project_id]
+    for p in progress:
+        p.setdefault("instructions", "")
+
+    return render_template(
+        "project_detail.html",
+        project=project,
+        expenses=expenses,
+        progress=progress,
+        role=session.get("role"),
     )
 
 # -------------------- Project Routes --------------------
@@ -551,5 +610,6 @@ def view_misc_expense():
         show_previous=show_previous
     )
 
-# ================= Export app =================
-# Vercel will use this `app` object automatically
+# -------------------- Run App --------------------
+if __name__ == "__main__":
+    app.run(debug=True)
